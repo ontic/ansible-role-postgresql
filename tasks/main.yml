@@ -45,6 +45,45 @@
     - 'configure'
     - 'service'
 
+- name: 'PostgreSQL | Define PostgreSQL data directory.'
+  set_fact:
+    postgresql_data_path: '{{ postgresql_default_data_path }}'
+  when: 'not postgresql_data_path'
+  tags:
+    - 'postgresql'
+    - 'postgresql-package'
+    - 'postgresql-configure'
+    - 'postgresql-service'
+    - 'package'
+    - 'configure'
+    - 'service'
+
+- name: 'PostgreSQL | Define PostgreSQL bin directory.'
+  set_fact:
+    postgresql_bin_path: '{{ postgresql_default_bin_path }}'
+  when: 'not postgresql_bin_path'
+  tags:
+    - 'postgresql'
+    - 'postgresql-package'
+    - 'postgresql-configure'
+    - 'postgresql-service'
+    - 'package'
+    - 'configure'
+    - 'service'
+
+- name: 'PostgreSQL | Define PostgreSQL config directory.'
+  set_fact:
+    postgresql_config_path: '{{ postgresql_default_config_path }}'
+  when: 'not postgresql_config_path'
+  tags:
+    - 'postgresql'
+    - 'postgresql-package'
+    - 'postgresql-configure'
+    - 'postgresql-service'
+    - 'package'
+    - 'configure'
+    - 'service'
+
 - include_tasks: 'package.yml'
   tags:
     - 'postgresql'

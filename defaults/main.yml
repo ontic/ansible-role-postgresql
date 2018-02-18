@@ -3,12 +3,19 @@
 
 ---
 
-postgresql_version: '10.2'
+postgresql_version: '10'
+
+postgresql_packages:
+postgresql_user: 'postgres'
+postgresql_group: 'postgres'
+
+postgresql_bin_path:
+postgresql_data_path:
 
 postgresql_repo_state: 'present'
 postgresql_repo_uid: 'pgdg'
 postgresql_repo_name: 'PostgreSQL'
-postgresql_repo_baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ postgresql_version.split(".")[0] }}/redhat/rhel-$releasever-$basearch/'
+postgresql_repo_baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ postgresql_version }}/redhat/rhel-$releasever-$basearch/'
 postgresql_repo_gpgkey: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG'
 postgresql_repo_gpgcheck: '1'
 postgresql_repo_enabled: '1'
@@ -20,5 +27,3 @@ postgresql_repo_key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
 postgresql_service_name:
 postgresql_service_state: 'started'
 postgresql_service_enabled: 'yes'
-
-postgresql_packages:

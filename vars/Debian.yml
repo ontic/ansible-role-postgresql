@@ -3,11 +3,13 @@
 
 ---
 
-postgresql_package_version: '{{ (postgresql_version | float < 10) | ternary(postgresql_version, "10") }}'
 postgresql_default_packages:
-  - name: 'postgresql-{{ postgresql_package_version }}'
-  - name: 'postgresql-client-{{ postgresql_package_version }}'
-  - name: 'postgresql-contrib-{{ postgresql_package_version }}'
+  - name: 'postgresql-{{ postgresql_version }}'
+  - name: 'postgresql-client-{{ postgresql_version }}'
+  - name: 'postgresql-contrib-{{ postgresql_version }}'
   - name: 'libpq-dev'
 
 postgresql_default_service_name: 'postgresql'
+postgresql_default_data_path: '/var/lib/postgresql/{{ postgresql_version }}/main'
+postgresql_default_bin_path: '/usr/lib/postgresql/{{ postgresql_version }}/bin'
+postgresql_default_config_path: '/etc/postgresql/{{ postgresql_version }}/main'
