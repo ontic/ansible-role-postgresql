@@ -1,0 +1,33 @@
+# Copyright (c) Ontic. (http://www.ontic.com.au). All rights reserved.
+# See the COPYING file bundled with this package for license details.
+
+---
+
+- name: 'PostgreSQL | Include OS-specific variables.'
+  include_vars: '{{ ansible_distribution }}-{{ ansible_distribution_version.split(".")[0] }}.yml'
+  tags:
+    - 'postgresql'
+    - 'postgresql-package'
+    - 'postgresql-configure'
+    - 'postgresql-service'
+    - 'package'
+    - 'configure'
+    - 'service'
+
+- include: 'package.yml'
+  tags:
+    - 'postgresql'
+    - 'postgresql-package'
+    - 'package'
+
+- include: 'configure.yml'
+  tags:
+    - 'postgresql'
+    - 'postgresql-configure'
+    - 'configure'
+
+- include: 'service.yml'
+  tags:
+    - 'postgresql'
+    - 'postgresql-service'
+    - 'service'
