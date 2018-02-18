@@ -10,6 +10,7 @@ postgresql_user: 'postgres'
 postgresql_group: 'postgres'
 
 postgresql_bin_path:
+postgresql_config_path:
 postgresql_data_path:
 
 postgresql_repo_state: 'present'
