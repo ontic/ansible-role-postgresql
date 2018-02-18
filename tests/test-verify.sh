@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # Verify the installed MySQL version.
-docker exec --tty ${container_id} env TERM=xterm postgresql -V
+docker exec --tty ${container_id} env TERM=xterm postgres -V
