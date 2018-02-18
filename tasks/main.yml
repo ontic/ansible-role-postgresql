@@ -4,7 +4,38 @@
 ---
 
 - name: 'PostgreSQL | Include OS-specific variables.'
-  include_vars: '{{ ansible_distribution }}-{{ ansible_distribution_version.split(".")[0] }}.yml'
+  include_vars: '{{ item }}'
+  with_first_found:
+    - '{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml'
+    - '{{ ansible_distribution }}.yml'
+    - '{{ ansible_os_family }}.yml'
+    - 'default.yml'
+  tags:
+    - 'postgresql'
+    - 'postgresql-package'
+    - 'postgresql-configure'
+    - 'postgresql-service'
+    - 'package'
+    - 'configure'
+    - 'service'
+
+- name: 'PostgreSQL | Define PostgreSQL service name.'
+  set_fact:
+    postgresql_service_name: '{{ postgresql_default_service_name }}'
+  when: 'not postgresql_service_name'
+  tags:
+    - 'postgresql'
+    - 'postgresql-package'
+    - 'postgresql-configure'
+    - 'postgresql-service'
+    - 'package'
+    - 'configure'
+    - 'service'
+
+- name: 'PostgreSQL | Define PostgreSQL packages.'
+  set_fact:
+    postgresql_packages: '{{ postgresql_default_packages }}'
+  when: 'not postgresql_packages'
   tags:
     - 'postgresql'
     - 'postgresql-package'

@@ -3,3 +3,87 @@
 
 ---
 
+- name: 'PostgreSQL | Debian | Install HTTPS transport.'
+  become: yes
+  apt:
+    name: 'apt-transport-https'
+    state: 'present'
+  when: 'ansible_os_family == "Debian"'
+
+- name: 'PostgreSQL | Debian | Update repository key.'
+  become: yes
+  apt_key:
+    id: '{{ postgresql_repo_key_id }}'
+    url: '{{ postgresql_repo_key_url }}'
+    state: '{{ postgresql_repo_state }}'
+  register: 'postgresql_key'
+  when: 'ansible_os_family == "Debian"'
+
+- name: 'PostgreSQL | Debian | Update repository list.'
+  become: yes
+  apt_repository:
+    repo: '{{ postgresql_repo_url }}'
+    state: '{{ postgresql_repo_state }}'
+    filename: 'pgdg'
+  register: 'postgresql_list'
+  when: 'ansible_os_family == "Debian"'
+
+- name: 'PostgreSQL | Debian | Update APT cache.'
+  become: yes
+  apt:
+    update_cache: yes
+  when: 'ansible_os_family == "Debian" and (postgresql_key.changed or postgresql_list.changed)'
+
+- name: 'PHP | RedHat | Remove absent repository.'
+  become: yes
+  file:
+    path: '/etc/yum.repos.d/{{ postgresql_repo_uid }}.repo'
+    state: 'absent'
+  register: 'postgresql_repo_removed'
+  when: 'ansible_os_family == "RedHat" and postgresql_repo_state | default("present") == "absent"'
+
+- name: 'PostgreSQL | RedHat | Add present repository.'
+  become: yes
+  template:
+    src: 'yum.repo.j2'
+    dest: '/etc/yum.repos.d/{{ postgresql_repo_uid }}.repo'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  register: 'postgresql_repo_added'
+  when: 'ansible_os_family == "RedHat" and postgresql_repo_state | default("present") == "present"'
+
+- name: 'PostgreSQL | Debian | Install PostgreSQL packages.'
+  become: yes
+  apt:
+    name: '{{ item.name if item.version is not defined else item.name + "=" + item.version }}'
+    cache_valid_time: '{{ item.cache_valid_time | default(omit) }}'
+    deb: '{{ item.deb | default(omit) }}'
+    default_release: '{{ item.default_release | default(omit) }}'
+    dpkg_options: '{{ item.dpkg_options | default(omit) }}'
+    force: '{{ item.force | default(omit) }}'
+    install_recommends: '{{ item.install_recommends | default(omit) }}'
+    purge: '{{ item.purge | default(omit) }}'
+    state: '{{ item.state | default(omit) }}'
+    update_cache: '{{ item.update_cache | default(omit) }}'
+    upgrade: '{{ item.upgrade | default(omit) }}'
+    allow_unauthenticated: yes
+  register: 'postgresql_debian_installed_packages'
+  with_items: '{{ postgresql_packages }}'
+  when: 'ansible_os_family == "Debian"'
+
+- name: 'PostgreSQL | RedHat | Install PostgreSQL packages.'
+  become: yes
+  yum:
+    name: '{{ item.name if item.version is not defined else item.name + "-" + item.version }}'
+    conf_file: '{{ item.conf_file | default(omit) }}'
+    disable_gpg_check: '{{ item.disable_gpg_check | default(omit) }}'
+    disablerepo: '{{ item.disablerepo | default(omit) }}'
+    enablerepo: '{{ item.enablerepo | default(omit) }}'
+    exclude: '{{ item.exclude | default(omit) }}'
+    list: '{{ item.list | default(omit) }}'
+    state: '{{ item.state | default(omit) }}'
+    update_cache: '{{ postgresql_repo_removed.changed or postgresql_repo_added.changed or item.update_cache | default(omit) }}'
+  register: 'postgresql_redhat_installed_packages'
+  with_items: '{{ postgresql_packages }}'
+  when: 'ansible_os_family == "RedHat"'

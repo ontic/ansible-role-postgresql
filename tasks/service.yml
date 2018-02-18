@@ -3,3 +3,9 @@
 
 ---
 
+- name: 'PostgreSQL | Enable PostgreSQL service.'
+  become: yes
+  service:
+    name: '{{ postgresql_service_name }}'
+    state: '{{ postgresql_service_state }}'
+    enabled: '{{ postgresql_service_enabled }}'

@@ -1,0 +1,13 @@
+# Copyright (c) Ontic. (http://www.ontic.com.au). All rights reserved.
+# See the COPYING file bundled with this package for license details.
+
+---
+
+postgresql_package_version: '{{ (postgresql_version | float < 10) | ternary(postgresql_version, "10") }}'
+postgresql_default_packages:
+  - name: 'postgresql-{{ postgresql_package_version }}'
+  - name: 'postgresql-client-{{ postgresql_package_version }}'
+  - name: 'postgresql-contrib-{{ postgresql_package_version }}'
+  - name: 'libpq-dev'
+
+postgresql_default_service_name: 'postgresql'
