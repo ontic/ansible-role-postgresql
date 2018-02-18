@@ -8,6 +8,6 @@ postgresql_default_packages:
   - name: 'postgresql{{ postgresql_package_version }}-server'
   - name: 'postgresql{{ postgresql_package_version }}'
   - name: 'postgresql{{ postgresql_package_version }}-contrib'
-  - name: 'postgresql{{ postgresql_package_version }}-lib'
+  - name: 'postgresql{{ postgresql_package_version }}-libs'
 
 postgresql_default_service_name: 'postgresql-{{ postgresql_package_version }}'
