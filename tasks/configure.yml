@@ -14,7 +14,7 @@
   template:
     src: '{{ postgresql_global_config_template }}'
     dest: '{{ postgresql_global_config_file }}'
-    force: '{{ (postgresql_check_global_config_file.stat.exists == false or mysql_global_config_file_refresh) | bool }}'
+    force: '{{ postgresql_check_global_config_file.stat.exists == false or postgresql_global_config_file_refresh | bool }}'
     owner: '{{ postgresql_user }}'
     group: '{{ postgresql_group }}'
     mode: '0644'
