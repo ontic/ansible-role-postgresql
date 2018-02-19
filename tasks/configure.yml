@@ -3,3 +3,17 @@
 
 ---
 
+- name: 'PostgreSQL | Configure properties in global config file.'
+  become: yes
+  ini_file:
+    dest: '{{ postgresql_config_path }}/postgresql.conf'
+    section:
+    option: '{{ item.option | default(omit) }}'
+    value: '{{ item.value | default(omit) }}'
+    state: '{{ item.state | default(omit) }}'
+    owner: '{{ postgresql_user }}'
+    group: '{{ postgresql_group }}'
+    mode: '0644'
+  notify: 'restart postgresql'
+  with_items: '{{ postgresql_global_config }}'
+  when: 'postgresql_global_config | default(None) != None'

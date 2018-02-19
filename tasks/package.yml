@@ -114,6 +114,3 @@
   become_user: '{{ postgresql_user }}'
   command: '{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_path }}'
   when: 'not postgresql_pgdata_dir_version.stat.exists'
-  # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
-  vars:
-    ansible_ssh_pipelining: true

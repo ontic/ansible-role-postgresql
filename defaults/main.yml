@@ -12,6 +12,8 @@ postgresql_packages:
 postgresql_bin_path:
 postgresql_config_path:
 postgresql_data_path:
+postgresql_global_config:
+  - { option: 'port', value: '5433' }
 
 postgresql_repo_state: 'present'
 postgresql_repo_uid: 'pgdg'
