@@ -9,12 +9,15 @@
     path: '{{ postgresql_global_config_file }}'
   register: 'postgresql_check_global_config_file'
 
+- debug:
+    var: 'postgresql_check_global_config_file'
+
 - name: 'PostgreSQL | Replace the global config file.'
   become: yes
   template:
     src: '{{ postgresql_global_config_template }}'
     dest: '{{ postgresql_global_config_file }}'
-    force: '{{ (postgresql_check_global_config_file.stat.exists == false or postgresql_global_config_file_refresh) | bool }}'
+    force: '{{ (not postgresql_check_global_config_file.stat.exists or postgresql_global_config_file_refresh) }}'
     owner: '{{ postgresql_user }}'
     group: '{{ postgresql_group }}'
     mode: '0644'
