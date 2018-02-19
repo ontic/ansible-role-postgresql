@@ -12,6 +12,10 @@ postgresql_packages:
 postgresql_bin_path:
 postgresql_config_path:
 postgresql_data_path:
+
+postgresql_global_config_file:
+postgresql_global_config_file_refresh: no
+postgresql_global_config_template: 'postgresql.conf.j2'
 postgresql_global_config:
   - { option: 'port', value: '5433' }
 

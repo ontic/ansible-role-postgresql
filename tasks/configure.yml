@@ -3,6 +3,18 @@
 
 ---
 
+- name: 'PostgreSQL | Replace the global config file.'
+  become: yes
+  template:
+    src: '{{ postgresql_global_config_template }}'
+    dest: '{{ postgresql_global_config_file }}'
+    force: '{{ postgresql_global_config_file_refresh }}'
+    owner: '{{ postgresql_user }}'
+    group: '{{ postgresql_group }}'
+    mode: '0644'
+  notify: 'restart postgresql'
+  when: 'postgresql_global_config_template | default(None) != None'
+
 - name: 'PostgreSQL | Configure properties in global config file.'
   become: yes
   ini_file:

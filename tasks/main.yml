@@ -84,6 +84,19 @@
     - 'configure'
     - 'service'
 
+- name: 'PostgreSQL | Define PostgreSQL global configuration file.'
+  set_fact:
+    postgresql_global_config_file: '{{ postgresql_default_global_config_file }}'
+  when: 'not postgresql_global_config_file'
+  tags:
+    - 'postgresql'
+    - 'postgresql-package'
+    - 'postgresql-configure'
+    - 'postgresql-service'
+    - 'package'
+    - 'configure'
+    - 'service'
+
 - include_tasks: 'package.yml'
   tags:
     - 'postgresql'
