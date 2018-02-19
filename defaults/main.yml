@@ -5,10 +5,10 @@
 
 postgresql_version: '10'
 
-postgresql_packages:
 postgresql_user: 'postgres'
 postgresql_group: 'postgres'
 
+postgresql_packages:
 postgresql_bin_path:
 postgresql_config_path:
 postgresql_data_path:

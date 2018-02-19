@@ -88,6 +88,12 @@
   with_items: '{{ postgresql_packages }}'
   when: 'ansible_os_family == "RedHat"'
 
+- name: 'PostgreSQL | Install dependencies for the Ansible module'
+  become: yes
+  package:
+    name: 'python-psycopg2'
+    state: 'present'
+
 - name: 'PostgreSQL | Set PostgreSQL environment variables.'
   become: yes
   template:
