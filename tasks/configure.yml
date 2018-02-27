@@ -12,8 +12,6 @@
     state: 'directory'
     mode: '0700'
   with_items:
-    - '{{ postgresql_config_path }}'
-    - '{{ postgresql_data_path }}'
     - '{{ postgresql_log_path }}'
     - '{{ postgresql_runtime_path }}'
 
