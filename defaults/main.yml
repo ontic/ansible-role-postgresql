@@ -34,7 +34,6 @@ postgresql_locales:
   - name: 'en_US.UTF-8'
 
 postgresql_global_config:
-postgresql_global_config_file:
 postgresql_global_config_file_refresh: no
 postgresql_global_config_template: 'postgresql.conf.j2'
 postgresql_global_authentication_template: 'pg_hba.conf.j2'
