@@ -77,9 +77,11 @@
 
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
+{% if postgresql_authentication | default(None) != None %} 
 {% for client in postgresql_authentication %}
 {{ client.type }} {{ client.database }} {{ client.user }} {{ client.address | default('') }} {{ client.ip_address | default('') }} {{ client.ip_mask | default('') }} {{ client.auth_method }} {% if 'auth_options' in client %} {% for option,value in client.auth_options.items() %}{{option}}={{value}} {% endfor %}{% endif %}
 {% endfor %}
+{% endif %}
 
 local       all     postgres        peer
 local       all     all             peer

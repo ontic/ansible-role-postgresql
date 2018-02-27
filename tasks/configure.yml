@@ -3,12 +3,6 @@
 
 ---
 
-- name: 'PostgreSQL | Ensure PostgreSQL database is initialized.'
-  become: yes
-  become_user: '{{ postgresql_user }}'
-  command: '{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_path }}'
-  when: 'not postgresql_installed.stat.exists'
-
 - name: 'PostgreSQL | Create necessary directories.'
   become: yes
   file:
@@ -22,6 +16,22 @@
     - '{{ postgresql_data_path }}'
     - '{{ postgresql_log_path }}'
     - '{{ postgresql_runtime_path }}'
+
+- name: 'PostgreSQL | Ensure PostgreSQL database is initialized.'
+  become: yes
+  become_user: '{{ postgresql_user }}'
+  command: '{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_path }}'
+  when: 'not postgresql_installed.stat.exists'
+
+- name: 'PostgreSQL | Debian | Forcefully restart PostgreSQL if system locales were changed.'
+  become: yes
+  service:
+    name: '{{ postgresql_service_name }}'
+    state: 'restarted'
+  when:
+    - 'ansible_os_family == "Debian"'
+    - 'postgresql_locales_installed is defined'
+    - 'postgresql_locales_installed.changed'
 
 - name: 'PostgreSQL | Check if PostgreSQL global config file exists.'
   become: yes

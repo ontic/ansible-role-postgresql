@@ -109,13 +109,3 @@
   register: 'postgresql_locales_installed'
   with_items: '{{ postgresql_locales }}'
   when: 'ansible_os_family == "Debian" and postgresql_locales | default(None) != None'
-
-- name: 'PostgreSQL | Debian | Restart PostgreSQL if system locales were changed.'
-  become: yes
-  service:
-    name: '{{ postgresql_service_name }}'
-    state: 'restarted'
-  when:
-    - 'ansible_os_family == "Debian"'
-    - 'postgresql_locales_installed is defined'
-    - 'postgresql_locales_installed.changed'
