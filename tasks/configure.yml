@@ -12,6 +12,8 @@
     state: 'directory'
     mode: '0700'
   with_items:
+    - '{{ postgresql_config_path }}'
+    - '{{ postgresql_data_path }}'
     - '{{ postgresql_log_path }}'
     - '{{ postgresql_runtime_path }}'
 
@@ -19,6 +21,8 @@
   become: yes
   become_user: '{{ postgresql_user }}'
   command: '{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_path }}'
+  vars:
+    ansible_ssh_pipelining: true
   when: 'not postgresql_installed.stat.exists'
 
 - name: 'PostgreSQL | Debian | Forcefully restart PostgreSQL if system locales were changed.'
