@@ -115,4 +115,7 @@
   service:
     name: '{{ postgresql_service_name }}'
     state: 'restarted'
-  when: 'ansible_os_family == "Debian" postgresql_locales_installed.changed'
+  when:
+    - 'ansible_os_family == "Debian"'
+    - 'postgresql_locales_installed is defined'
+    - 'postgresql_locales_installed.changed'
