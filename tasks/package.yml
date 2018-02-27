@@ -94,6 +94,20 @@
     name: 'python-psycopg2'
     state: 'present'
 
+- name: 'PostgreSQL | Debian | Install locale package.'
+  become: yes
+  apt:
+    name: 'locales'
+    state: 'present'
+  when: 'ansible_os_family == "Debian"'
+
+- name: 'PostgreSQL | RedHat | Install locale package.'
+  become: yes
+  yum:
+    name: 'glibc-common'
+    state: 'present'
+  when: 'ansible_os_family == "RedHat"'
+
 - name: 'PostgreSQL | Install system locales.'
   become: yes
   locale_gen:
@@ -102,10 +116,3 @@
   register: 'postgresql_locales_installed'
   with_items: '{{ postgresql_locales }}'
   when: 'postgresql_locales | default(None) != None'
-
-- name: 'PostgreSQL | Restart PostgreSQL if system locales were changed.'
-  become: yes
-  service:
-    name: '{{ postgresql_service_name }}'
-    state: 'restarted'
-  when: 'postgresql_locales_installed.changed'

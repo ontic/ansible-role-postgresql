@@ -23,6 +23,13 @@
   command: '{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_path }}'
   when: 'not postgresql_installed.stat.exists'
 
+- name: 'PostgreSQL | Forcefully restart PostgreSQL if system locales were changed.'
+  become: yes
+  service:
+    name: '{{ postgresql_service_name }}'
+    state: 'restarted'
+  when: 'postgresql_locales_installed is defined and postgresql_locales_installed.changed'
+
 - name: 'PostgreSQL | Check if PostgreSQL global config file exists.'
   become: yes
   stat:
