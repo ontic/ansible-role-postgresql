@@ -73,8 +73,6 @@
 # listen on a non-local interface via the listen_addresses
 # configuration parameter, or via the -i or -h command line switches.
 
-@authcomment@
-
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
 {% if postgresql_authentication | default(None) != None %} 
