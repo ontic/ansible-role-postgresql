@@ -17,29 +17,26 @@
     - '{{ postgresql_log_path }}'
     - '{{ postgresql_runtime_path }}'
 
+- name: 'PostgreSQL | Determine whether PostgreSQL is initialized.'
+  stat:
+    path: '{{ postgresql_data_path }}/PG_VERSION'
+  register: 'postgresql_initialized'
+  tags:
+    - 'postgresql'
+    - 'postgresql-package'
+    - 'postgresql-configure'
+    - 'postgresql-service'
+    - 'package'
+    - 'configure'
+    - 'service'
+
 - name: 'PostgreSQL | Ensure PostgreSQL database is initialized.'
   become: yes
   become_user: '{{ postgresql_user }}'
   command: '{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_path }}'
   vars:
     ansible_ssh_pipelining: true
-  when: 'not postgresql_installed.stat.exists'
-
-- name: 'PostgreSQL | Debian | Forcefully restart PostgreSQL if system locales were changed.'
-  become: yes
-  service:
-    name: '{{ postgresql_service_name }}'
-    state: 'restarted'
-  when:
-    - 'ansible_os_family == "Debian"'
-    - 'postgresql_locales_installed is defined'
-    - 'postgresql_locales_installed.changed'
-
-- name: 'PostgreSQL | Check if PostgreSQL global config file exists.'
-  become: yes
-  stat:
-    path: '{{ postgresql_config_path }}/postgresql.conf'
-  register: 'postgresql_check_global_config_file'
+  when: 'not postgresql_initialized.stat.exists'
 
 - name: 'PostgreSQL | Create or refresh the global config file.'
   become: yes
