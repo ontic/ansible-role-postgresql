@@ -45,7 +45,7 @@
     - 'configure'
     - 'service'
 
-- name: 'PostgreSQL | Define PostgreSQL bin directory.'
+- name: 'PostgreSQL | Define PostgreSQL bin directory path.'
   set_fact:
     postgresql_bin_path: '{{ postgresql_default_bin_path }}'
   when: 'not postgresql_bin_path'
@@ -58,7 +58,7 @@
     - 'configure'
     - 'service'
 
-- name: 'PostgreSQL | Define PostgreSQL config directory.'
+- name: 'PostgreSQL | Define PostgreSQL config directory path.'
   set_fact:
     postgresql_config_path: '{{ postgresql_default_config_path }}'
   when: 'not postgresql_config_path'
@@ -71,10 +71,36 @@
     - 'configure'
     - 'service'
 
-- name: 'PostgreSQL | Define PostgreSQL data directory.'
+- name: 'PostgreSQL | Define PostgreSQL data directory path.'
   set_fact:
     postgresql_data_path: '{{ postgresql_default_data_path }}'
   when: 'not postgresql_data_path'
+  tags:
+    - 'postgresql'
+    - 'postgresql-package'
+    - 'postgresql-configure'
+    - 'postgresql-service'
+    - 'package'
+    - 'configure'
+    - 'service'
+
+- name: 'PostgreSQL | Define PostgreSQL log directory path.'
+  set_fact:
+    postgresql_log_path: '{{ postgresql_default_log_path }}'
+  when: 'not postgresql_log_path'
+  tags:
+    - 'postgresql'
+    - 'postgresql-package'
+    - 'postgresql-configure'
+    - 'postgresql-service'
+    - 'package'
+    - 'configure'
+    - 'service'
+
+- name: 'PostgreSQL | Define PostgreSQL runtime directory path.'
+  set_fact:
+    postgresql_runtime_path: '{{ postgresql_default_runtime_path }}'
+  when: 'not postgresql_runtime_path'
   tags:
     - 'postgresql'
     - 'postgresql-package'
@@ -88,6 +114,19 @@
   set_fact:
     postgresql_global_config_file: '{{ postgresql_default_global_config_file }}'
   when: 'not postgresql_global_config_file'
+  tags:
+    - 'postgresql'
+    - 'postgresql-package'
+    - 'postgresql-configure'
+    - 'postgresql-service'
+    - 'package'
+    - 'configure'
+    - 'service'
+
+- name: 'PostgreSQL | Define whether PostgreSQL is installed.'
+  stat:
+    path: '{{ postgresql_data_path }}/PG_VERSION'
+  register: 'postgresql_installed'
   tags:
     - 'postgresql'
     - 'postgresql-package'

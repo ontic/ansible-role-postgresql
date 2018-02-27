@@ -3,18 +3,38 @@
 
 ---
 
+- name: 'PostgreSQL | Create necessary directories.'
+  become: yes
+  file:
+    path: '{{ item }}'
+    owner: '{{ postgresql_user }}'
+    group: '{{ postgresql_group }}'
+    state: 'directory'
+    mode: '0700'
+  with_items:
+    - '{{ postgresql_config_path }}'
+    - '{{ postgresql_data_path }}'
+    - '{{ postgresql_log_path }}'
+    - '{{ postgresql_runtime_path }}'
+
+- name: 'PostgreSQL | Ensure PostgreSQL database is initialized.'
+  become: yes
+  become_user: '{{ postgresql_user }}'
+  command: '{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_path }}'
+  when: 'not postgresql_installed.stat.exists'
+
 - name: 'PostgreSQL | Check if PostgreSQL global config file exists.'
   become: yes
   stat:
-    path: '{{ postgresql_global_config_file }}'
+    path: '{{ postgresql_config_path }}/postgresql.conf'
   register: 'postgresql_check_global_config_file'
 
-- name: 'PostgreSQL | Replace the global config file.'
+- name: 'PostgreSQL | Create or refresh the global config file.'
   become: yes
   template:
     src: '{{ postgresql_global_config_template }}'
-    dest: '{{ postgresql_global_config_file }}'
-    force: '{{ postgresql_check_global_config_file.stat.exists == false or postgresql_global_config_file_refresh }}'
+    dest: '{{ postgresql_config_path }}/postgresql.conf'
+    force: '{{ postgresql_global_config_file_refresh or not postgresql_installed.stat.exists }}'
     owner: '{{ postgresql_user }}'
     group: '{{ postgresql_group }}'
     mode: '0644'
@@ -24,7 +44,7 @@
 - name: 'PostgreSQL | Configure properties in global config file.'
   become: yes
   ini_file:
-    dest: '{{ postgresql_global_config_file }}'
+    dest: '{{ postgresql_config_path }}/postgresql.conf'
     section:
     option: '{{ item.option | default(omit) }}'
     value: '{{ item.value | default(omit) }}'
@@ -35,3 +55,71 @@
   notify: 'restart postgresql'
   with_items: '{{ postgresql_global_config }}'
   when: 'postgresql_global_config | default(None) != None'
+
+- name: 'PostgreSQL | Configure the global host-based authentication file.'
+  become: yes
+  template:
+    src: '{{ postgresql_global_authentication_template }}'
+    dest: '{{ postgresql_config_path }}/pg_hba.conf'
+    owner: '{{ postgresql_user }}'
+    group: '{{ postgresql_group }}'
+    mode: '0644'
+  notify: 'restart postgresql'
+  when: 'postgresql_global_authentication_template | default(None) != None'
+
+- name: 'PostgreSQL | Configure databases.'
+  become: yes
+  become_user: '{{ postgresql_user }}'
+  postgresql_db:
+    encoding: '{{ item.encoding | default("UTF-8") }}'
+    lc_collate: '{{ item.lc_collate | default("en_US.UTF-8") }}'
+    lc_ctype: '{{ item.lc_ctype | default("en_US.UTF-8") }}'
+    login_host: '{{ item.login_host | default("localhost") }}'
+    login_password: '{{ item.login_password | default(omit) }}'
+    login_unix_socket: '{{ item.login_unix_socket | default(omit) }}'
+    login_user: '{{ item.login_user | default(omit) }}'
+    name: '{{ item.name }}'
+    owner: '{{ item.owner | default(omit) }}'
+    port: '{{ item.port | default(omit) }}'
+    ssl_mode: '{{ item.ssl_mode | default(omit) }}'
+    ssl_rootcert: '{{ item.ssl_rootcert | default(omit) }}'
+    state: '{{ item.state | default("present") }}'
+    target: '{{ item.target | default(omit) }}'
+    target_opts: '{{ item.target_opts | default(omit) }}'
+    template: '{{ item.template | default("template0") }}'
+  vars:
+    ansible_ssh_pipelining: true
+  with_items: '{{ postgresql_databases }}'
+  when: 'postgresql_databases | default(None) != None'
+
+- name: 'PostgreSQL | Configure users.'
+  become: yes
+  become_user: '{{ postgresql_user }}'
+  postgresql_user:
+    conn_limit: '{{ item.conn_limit | default(omit) }}'
+    db: '{{ item.db | default(omit) }}'
+    encrypted: '{{ item.encrypted | default(omit) }}'
+    expires: '{{ item.expires | default(omit) }}'
+    fail_on_user: '{{ item.fail_on_user | default(omit) }}'
+    login_host: '{{ item.login_host | default("localhost") }}'
+    login_password: '{{ item.login_password | default(omit) }}'
+    login_unix_socket: '{{ item.login_unix_socket | default(omit) }}'
+    login_user: '{{ item.login_user | default(postgresql_user) }}'
+    name: '{{ item.name }}'
+    no_password_changes: '{{ item.no_password_changes | default(omit) }}'
+    password: '{{ item.password | default(omit) }}'
+    port: '{{ item.port | default(omit) }}'
+    priv: '{{ item.priv | default(omit) }}'
+    role_attr_flags: '{{ item.role_attr_flags | default(omit) }}'
+    ssl_mode: '{{ item.ssl_mode | default(omit) }}'
+    ssl_rootcert: '{{ item.ssl_rootcert | default(omit) }}'
+    state: '{{ item.state | default("present") }}'
+  vars:
+    ansible_ssh_pipelining: true
+  with_items: '{{ postgresql_users }}'
+  when: 'postgresql_users | default(None) != None'
+
+
+
+
+

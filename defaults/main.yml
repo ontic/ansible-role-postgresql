@@ -6,18 +6,11 @@
 postgresql_version: '10'
 
 postgresql_user: 'postgres'
-postgresql_group: 'postgres'
+postgresql_group: '{{ postgresql_user }}'
 
-postgresql_packages:
-postgresql_bin_path:
-postgresql_config_path:
-postgresql_data_path:
-
-postgresql_global_config_file:
-postgresql_global_config_file_refresh: no
-postgresql_global_config_template: 'postgresql.conf.j2'
-postgresql_global_config:
-  - { option: 'port', value: '5433' }
+postgresql_service_name:
+postgresql_service_state: 'started'
+postgresql_service_enabled: 'yes'
 
 postgresql_repo_state: 'present'
 postgresql_repo_uid: 'pgdg'
@@ -31,6 +24,21 @@ postgresql_repo_url: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_di
 postgresql_repo_key_id: 'ACCC4CF8'
 postgresql_repo_key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
 
-postgresql_service_name:
-postgresql_service_state: 'started'
-postgresql_service_enabled: 'yes'
+postgresql_bin_path:
+postgresql_config_path:
+postgresql_data_path:
+postgresql_log_path:
+postgresql_runtime_path:
+
+postgresql_locales:
+  - name: 'en_US.UTF-8'
+
+postgresql_global_config:
+postgresql_global_config_file_refresh: no
+postgresql_global_config_template: 'postgresql.conf.j2'
+postgresql_global_authentication_template: 'pg_hba.conf.j2'
+
+postgresql_packages:
+postgresql_authentication:
+postgresql_databases:
+postgresql_users:

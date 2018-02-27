@@ -10,7 +10,8 @@ postgresql_default_packages:
   - name: 'postgresql{{ postgresql_version }}-libs'
 
 postgresql_default_service_name: 'postgresql-{{ postgresql_version }}'
-postgresql_default_data_path: '/var/lib/pgsql/{{ postgresql_version }}/data/'
 postgresql_default_bin_path: '/usr/pgsql-{{ postgresql_version }}/bin'
-postgresql_default_config_path: '/var/lib/pgsql/{{ postgresql_version }}/data/'
-postgresql_default_global_config_file: '{{ postgresql_default_config_path }}/postgresql.conf'
+postgresql_default_config_path: '/var/lib/pgsql/{{ postgresql_version }}/data'
+postgresql_default_data_path: '/var/lib/pgsql/{{ postgresql_version }}/data'
+postgresql_default_log_path: '/var/log/postgresql'
+postgresql_default_runtime_path: '/var/run/postgresql'

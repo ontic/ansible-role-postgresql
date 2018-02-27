@@ -94,23 +94,18 @@
     name: 'python-psycopg2'
     state: 'present'
 
-- name: 'PostgreSQL | Ensure PostgreSQL data directory exists.'
+- name: 'PostgreSQL | Install system locales.'
   become: yes
-  file:
-    path: '{{ postgresql_data_path }}'
-    owner: '{{ postgresql_user }}'
-    group: '{{ postgresql_group }}'
-    state: 'directory'
-    mode: '0700'
+  locale_gen:
+    name: '{{ item.name }}'
+    state: '{{ item.state | default("present") }}'
+  register: 'postgresql_locales_installed'
+  with_items: '{{ postgresql_locales }}'
+  when: 'postgresql_locales | default(None) != None'
 
-- name: 'PostgreSQL | Check if PostgreSQL database is initialized.'
+- name: 'PostgreSQL | Restart PostgreSQL if system locales were changed.'
   become: yes
-  stat:
-    path: '{{ postgresql_data_path }}/PG_VERSION'
-  register: 'postgresql_pgdata_dir_version'
-
-- name: 'PostgreSQL | Ensure PostgreSQL database is initialized.'
-  become: yes
-  become_user: '{{ postgresql_user }}'
-  command: '{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_path }}'
-  when: 'not postgresql_pgdata_dir_version.stat.exists'
+  service:
+    name: '{{ postgresql_service_name }}'
+    state: 'restarted'
+  when: 'postgresql_locales_installed.changed'

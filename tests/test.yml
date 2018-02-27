@@ -4,5 +4,10 @@
 ---
 
 - hosts: 'localhost'
+  vars:
+    postgresql_databases:
+      - name: 'application'
+    postgresql_users:
+      - name: 'administrator'
   roles:
     - { role: 'role_under_test' }
