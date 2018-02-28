@@ -26,8 +26,6 @@
   become: yes
   become_user: '{{ postgresql_user }}'
   command: '{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_path }}'
-  vars:
-    ansible_ssh_pipelining: true
   when: 'not postgresql_initialized.stat.exists'
 
 - name: 'PostgreSQL | Configure the global authentication file.'
@@ -98,8 +96,6 @@
     target: '{{ item.target | default(omit) }}'
     target_opts: '{{ item.target_opts | default(omit) }}'
     template: '{{ item.template | default("template0") }}'
-  vars:
-    ansible_ssh_pipelining: true
   with_items: '{{ postgresql_databases }}'
   when: 'postgresql_databases | default(None) != None'
 
@@ -126,8 +122,6 @@
     ssl_mode: '{{ item.ssl_mode | default(omit) }}'
     ssl_rootcert: '{{ item.ssl_rootcert | default(omit) }}'
     state: '{{ item.state | default("present") }}'
-  vars:
-    ansible_ssh_pipelining: true
   with_items: '{{ postgresql_users }}'
   when: 'postgresql_users | default(None) != None'
 
