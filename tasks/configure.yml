@@ -37,17 +37,7 @@
     group: '{{ postgresql_group }}'
     mode: '0644'
   notify: 'restart postgresql'
-  register: 'postgresql_authentication_result'
   when: 'postgresql_global_authentication_template | default(None) != None'
-
-- name: 'PostgreSQL | Forcefully restart PostgreSQL if authentication was changed.'
-  become: yes
-  service:
-    name: '{{ postgresql_service_name }}'
-    state: 'restarted'
-  when:
-    - 'postgresql_authentication_result is defined'
-    - 'postgresql_authentication_result.changed'
 
 - name: 'PostgreSQL | Create or refresh the global config file.'
   become: yes
