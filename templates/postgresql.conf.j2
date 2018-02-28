@@ -39,12 +39,9 @@
 # The default values of these variables are driven from the -D command-line
 # option or PGDATA environment variable, represented here as ConfigDir.
 
-data_directory = '{{ postgresql_data_path }}'		# use data in another directory
-					# (change requires restart)
-hba_file = '{{ postgresql_config_path }}/pg_hba.conf'	# host-based authentication file
-					# (change requires restart)
-ident_file = '{{ postgresql_config_path }}/pg_ident.conf'	# ident configuration file
-					# (change requires restart)
+data_directory = '{{ postgresql_data_path }}'
+hba_file = '{{ postgresql_config_path }}/pg_hba.conf'
+ident_file = '{{ postgresql_config_path }}/pg_ident.conf'
 
 # If external_pid_file is not explicitly set, no extra PID file is written.
 #external_pid_file = ''			# write an extra PID file
@@ -64,8 +61,8 @@ ident_file = '{{ postgresql_config_path }}/pg_ident.conf'	# ident configuration 
 #port = 5432				# (change requires restart)
 #max_connections = 100			# (change requires restart)
 #superuser_reserved_connections = 3	# (change requires restart)
-unix_socket_directories = '{{ postgresql_runtime_path }}'	# comma-separated list of directories
-					# (change requires restart)
+unix_socket_directories = '{{ postgresql_runtime_path }}'
+
 #unix_socket_group = ''			# (change requires restart)
 #unix_socket_permissions = 0777		# begin with 0 to use octal notation
 					# (change requires restart)
