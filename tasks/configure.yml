@@ -39,11 +39,11 @@
   register: 'postgresql_authentication_result'
   when: 'postgresql_global_authentication_template | default(None) != None'
 
-- name: 'PostgreSQL | Forcefully restart PostgreSQL if authentication was changed.'
+- name: 'PostgreSQL | Reload PostgreSQL if authentication was changed.'
   become: yes
   service:
     name: '{{ postgresql_service_name }}'
-    state: 'restarted'
+    state: 'reloaded'
   when:
     - 'postgresql_authentication_result is defined'
     - 'postgresql_authentication_result.changed'
@@ -75,29 +75,6 @@
   with_items: '{{ postgresql_global_config }}'
   when: 'postgresql_global_config | default(None) != None'
 
-- name: 'PostgreSQL | Configure databases.'
-  become: yes
-  become_user: '{{ postgresql_user }}'
-  postgresql_db:
-    encoding: '{{ item.encoding | default("UTF-8") }}'
-    lc_collate: '{{ item.lc_collate | default("en_US.UTF-8") }}'
-    lc_ctype: '{{ item.lc_ctype | default("en_US.UTF-8") }}'
-    login_host: '{{ item.login_host | default(omit) }}'
-    login_password: '{{ item.login_password | default(omit) }}'
-    login_unix_socket: '{{ item.login_unix_socket | default(omit) }}'
-    login_user: '{{ item.login_user | default(postgresql_user) }}'
-    name: '{{ item.name }}'
-    owner: '{{ item.owner | default(omit) }}'
-    port: '{{ item.port | default(omit) }}'
-    ssl_mode: '{{ item.ssl_mode | default(omit) }}'
-    ssl_rootcert: '{{ item.ssl_rootcert | default(omit) }}'
-    state: '{{ item.state | default("present") }}'
-    target: '{{ item.target | default(omit) }}'
-    target_opts: '{{ item.target_opts | default(omit) }}'
-    template: '{{ item.template | default("template0") }}'
-  with_items: '{{ postgresql_databases }}'
-  when: 'postgresql_databases | default(None) != None'
-
 - name: 'PostgreSQL | Configure users.'
   no_log: true
   become: yes
@@ -124,7 +101,63 @@
   with_items: '{{ postgresql_users }}'
   when: 'postgresql_users | default(None) != None'
 
+- name: 'PostgreSQL | Configure databases.'
+  become: yes
+  become_user: '{{ postgresql_user }}'
+  postgresql_db:
+    encoding: '{{ item.encoding | default("UTF-8") }}'
+    lc_collate: '{{ item.lc_collate | default("en_US.UTF-8") }}'
+    lc_ctype: '{{ item.lc_ctype | default("en_US.UTF-8") }}'
+    login_host: '{{ item.login_host | default(omit) }}'
+    login_password: '{{ item.login_password | default(omit) }}'
+    login_unix_socket: '{{ item.login_unix_socket | default(omit) }}'
+    login_user: '{{ item.login_user | default(postgresql_user) }}'
+    name: '{{ item.name }}'
+    owner: '{{ item.owner | default(omit) }}'
+    port: '{{ item.port | default(omit) }}'
+    ssl_mode: '{{ item.ssl_mode | default(omit) }}'
+    ssl_rootcert: '{{ item.ssl_rootcert | default(omit) }}'
+    state: '{{ item.state | default("present") }}'
+    target: '{{ item.target | default(omit) }}'
+    target_opts: '{{ item.target_opts | default(omit) }}'
+    template: '{{ item.template | default("template0") }}'
+  with_items: '{{ postgresql_databases }}'
+  when: 'postgresql_databases | default(None) != None'
 
+- name: 'PostgreSQL | Configure schemas.'
+  become: yes
+  become_user: '{{ postgresql_user }}'
+  postgresql_schema:
+    database: '{{ item.database | default(omit) }}'
+    login_host: '{{ item.login_host | default(omit) }}'
+    login_password: '{{ item.login_password | default(omit) }}'
+    login_unix_socket: '{{ item.login_unix_socket | default(omit) }}'
+    login_user: '{{ item.login_user | default(postgresql_user) }}'
+    name: '{{ item.name }}'
+    owner: '{{ item.owner | default(omit) }}'
+    port: '{{ item.port | default(omit) }}'
+    state: '{{ item.state | default("present") }}'
+  with_items: '{{ postgresql_schemas }}'
+  when: 'postgresql_schemas | default(None) != None'
 
-
-
+- name: 'PostgreSQL | Configure privileges.'
+  become: yes
+  become_user: '{{ postgresql_user }}'
+  postgresql_privs:
+    database: '{{ item.database }}'
+    grant_option: '{{ item.grant_option | default(omit) }}'
+    login_host: '{{ item.login_host | default(omit) }}'
+    login_password: '{{ item.login_password | default(omit) }}'
+    login_unix_socket: '{{ item.login_unix_socket | default(omit) }}'
+    login_user: '{{ item.login_user | default(postgresql_user) }}'
+    objs: '{{ item.objs | default(omit) }}'
+    port: '{{ item.port | default(omit) }}'
+    privs: '{{ item.privs | default(omit) }}'
+    roles: '{{ item.roles }}'
+    schema: '{{ item.schema | default(omit) }}'
+    ssl_mode: '{{ item.ssl_mode | default(omit) }}'
+    ssl_rootcert: '{{ item.ssl_rootcert | default(omit) }}'
+    state: '{{ item.grant_option | default(omit) }}'
+    type: '{{ item.type | default(omit) }}'
+  with_items: '{{ postgresql_privileges }}'
+  when: 'postgresql_privileges | default(None) != None'

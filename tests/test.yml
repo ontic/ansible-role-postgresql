@@ -5,9 +5,26 @@
 
 - hosts: 'localhost'
   vars:
+    postgresql_users:
+      - name: 'web'
+        password: 'c734fh34fb'
+      - name: 'joe'
+        password: 'ijnef9349f'
     postgresql_databases:
       - name: 'application'
-    postgresql_users:
-      - name: 'administrator'
+    postgresql_schemas:
+      - name: 'staging'
+        database: 'application'
+    postgresql_privileges:
+      - database: 'application'
+        type: 'schema'
+        roles: 'web'
+        privs: 'ALL'
+        objs: 'public,staging'
+      - database: 'application'
+        type: 'schema'
+        roles: 'joe'
+        privs: 'ALL'
+        objs: 'staging'
   roles:
     - { role: 'role_under_test' }

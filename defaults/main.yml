@@ -40,5 +40,7 @@ postgresql_global_authentication_template: 'pg_hba.conf.j2'
 
 postgresql_packages:
 postgresql_authentication:
-postgresql_databases:
 postgresql_users:
+postgresql_databases:
+postgresql_schemas:
+postgresql_privileges:
