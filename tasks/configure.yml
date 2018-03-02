@@ -76,12 +76,13 @@
   when: 'postgresql_global_config | default(None) != None'
 
 - name: 'PostgreSQL | Configure users.'
+#  no_log: true
   become: yes
   become_user: '{{ postgresql_user }}'
   postgresql_user:
     conn_limit: '{{ item.conn_limit | default(omit) }}'
     db: '{{ item.db | default(omit) }}'
-    encrypted: '{{ item.encrypted | default(omit) }}'
+    encrypted: '{{ item.encrypted | default(yes) }}'
     expires: '{{ item.expires | default(omit) }}'
     fail_on_user: '{{ item.fail_on_user | default(omit) }}'
     login_host: '{{ item.login_host | default(omit) }}'
