@@ -76,7 +76,6 @@
   when: 'postgresql_global_config | default(None) != None'
 
 - name: 'PostgreSQL | Configure users.'
-  no_log: true
   become: yes
   become_user: '{{ postgresql_user }}'
   postgresql_user:
