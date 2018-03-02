@@ -4,4 +4,4 @@
 docker exec --tty ${container_id} env TERM=xterm psql -V
 
 # Verify that databases were created.
-docker exec --tty ${container_id} env TERM=xterm psql -l
+docker exec --tty ${container_id} env TERM=xterm psql -l -U postgres
