@@ -7,9 +7,9 @@
   vars:
     postgresql_users:
       - name: 'web'
-        password: 'md5{{ "c734fh34fb" | hash("md5") }}'
+        password: 'md5{{ "c734fh34fb" + "web" | hash("md5") }}'
       - name: 'joe'
-        password: 'md5{{ "ijnef9349f" | hash("md5") }}'
+        password: 'md5{{ "ijnef9349f" + "joe" | hash("md5") }}'
     postgresql_databases:
       - name: 'application'
     postgresql_schemas:
