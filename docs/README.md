@@ -239,7 +239,7 @@ records to manage. Each record supports the following parameters:
 | address      | yes when `ip_address` is not defined |
 | ip_address   | yes when `address` is not defined    |
 | ip_mask      | no                                   |
-| auth_method  | no                                   |
+| auth_method  | yes                                  |
 | auth_options | no                                   |
 
 ```
