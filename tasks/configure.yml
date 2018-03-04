@@ -65,7 +65,7 @@
   ini_file:
     dest: '{{ postgresql_config_path }}/postgresql.conf'
     section:
-    option: '{{ item.option | default(omit) }}'
+    option: '{{ item.option }}'
     value: '{{ item.value | default(omit) }}'
     state: '{{ item.state | default(omit) }}'
     owner: '{{ postgresql_user }}'
