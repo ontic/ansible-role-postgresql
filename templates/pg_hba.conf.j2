@@ -77,6 +77,6 @@
 
 {% if postgresql_authentication | default(None) != None %} 
 {% for client in postgresql_authentication %}
-{{ client.type }} {{ client.database }} {{ client.user }} {{ client.address | default('') }} {{ client.ip_address | default('') }} {{ client.ip_mask | default('') }} {{ client.auth_method }} {% if client.auth_options is defined %} {% for option,value in client.auth_options.items() %}{{option}}={{value}} {% endfor %}{% endif %}
+{{ client.type }} {{ client.database }} {{ client.user }} {{ client.address | default('') }} {{ client.ip_address | default('') }} {{ client.ip_mask | default('') }} {{ client.auth_method }} {{ client.auth_options | default('') }}
 {% endfor %}
 {% endif %}
