@@ -43,7 +43,7 @@
   become: yes
   service:
     name: '{{ postgresql_service_name }}'
-    state: 'restarted'
+    state: 'reloaded'
   when:
     - 'postgresql_authentication_result is defined'
     - 'postgresql_authentication_result.changed'
