@@ -111,6 +111,7 @@
     - 'service'
 
 - name: 'PostgreSQL | Define whether PostgreSQL is installed.'
+  become: yes
   stat:
     path: '{{ postgresql_data_path }}/PG_VERSION'
   register: 'postgresql_installed'

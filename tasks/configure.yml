@@ -18,6 +18,7 @@
     - '{{ postgresql_runtime_path }}'
 
 - name: 'PostgreSQL | Determine whether PostgreSQL is initialized.'
+  become: yes
   stat:
     path: '{{ postgresql_data_path }}/PG_VERSION'
   register: 'postgresql_initialized'
