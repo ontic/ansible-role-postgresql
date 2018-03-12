@@ -15,9 +15,9 @@ postgresql_global_config:
   - { option: 'max_connections', value: '150' }
 postgresql_users:
   - name: 'web'
-    password: 'md5{{ "password" + "web" | hash("md5") }}'
+    password: 'md5{{ ("password" + "web") | hash("md5") }}'
   - name: 'joe'
-    password: 'md5{{ "password" + "joe" | hash("md5") }}'
+    password: 'md5{{ ("password" + "joe") | hash("md5") }}'
 postgresql_databases:
   - name: 'application'
 postgresql_schemas:
